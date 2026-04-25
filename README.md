@@ -127,15 +127,19 @@ Adjust to your calibrated chain.
 
 This repository now includes `esp32_v2s200dz_sd_wav.ino`, an Arduino sketch for ESP32 that:
 
-- reads the V2S200DZ as a PDM source over I2S
+- reads two V2S200DZ sensors as a stereo PDM source over I2S
 - uses `GPIO26` as the sensor clock and `GPIO27` as data in
-- writes mono 16-bit PCM into `/vibration.wav` on an SD card
+- writes stereo 16-bit PCM into `/vibration.wav` on an SD card
 - patches the WAV header at the end so the file is directly playable/processable
 
 Wiring used by the sketch:
 
-- Sensor CLK -> ESP32 GPIO26
-- Sensor DT  -> ESP32 GPIO27
+- Sensor 1 CLK -> ESP32 GPIO26
+- Sensor 2 CLK -> ESP32 GPIO26
+- Sensor 1 DT  -> ESP32 GPIO27
+- Sensor 2 DT  -> ESP32 GPIO27
+- Sensor 1 SEL/LR -> GND (Left channel)
+- Sensor 2 SEL/LR -> 3.3V (Right channel)
 - SD CS      -> ESP32 GPIO5
 - SD SPI pins (default): MOSI=23, MISO=19, SCK=18
 

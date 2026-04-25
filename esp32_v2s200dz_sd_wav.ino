@@ -15,7 +15,9 @@ static constexpr i2s_port_t I2S_PORT = I2S_NUM_0;
 // 16 kHz is a good general-purpose vibration logging rate for this sensor family.
 static constexpr uint32_t SAMPLE_RATE_HZ = 16000;
 static constexpr uint16_t BITS_PER_SAMPLE = 16;
-static constexpr uint16_t CHANNEL_COUNT = 1;
+// Two-sensor PDM capture on one data line (SEL/LR strapped opposite):
+// sensor A SEL -> GND (Left), sensor B SEL -> 3V3 (Right)
+static constexpr uint16_t CHANNEL_COUNT = 2;
 
 // Record length in seconds. Increase as needed.
 static constexpr uint32_t RECORD_SECONDS = 20;
@@ -111,7 +113,7 @@ bool initI2SPDM() {
   i2s_config.mode = static_cast<i2s_mode_t>(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM);
   i2s_config.sample_rate = SAMPLE_RATE_HZ;
   i2s_config.bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT;
-  i2s_config.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT;
+  i2s_config.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
   i2s_config.communication_format = I2S_COMM_FORMAT_STAND_I2S;
   i2s_config.intr_alloc_flags = ESP_INTR_FLAG_LEVEL1;
   i2s_config.dma_buf_count = 8;
@@ -138,7 +140,7 @@ bool initI2SPDM() {
     return false;
   }
 
-  err = i2s_set_clk(I2S_PORT, SAMPLE_RATE_HZ, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
+  err = i2s_set_clk(I2S_PORT, SAMPLE_RATE_HZ, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
   if (err != ESP_OK) {
     Serial.printf("[ERR] i2s_set_clk failed: %d\n", err);
     return false;
