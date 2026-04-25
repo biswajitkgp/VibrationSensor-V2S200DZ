@@ -122,3 +122,29 @@ Adjust to your calibrated chain.
 4. STM32 USB Wiki — https://wiki.st.com/stm32mcu/wiki/Category:USB
 5. WSL USB passthrough — https://learn.microsoft.com/en-us/windows/wsl/connect-usb
 
+
+## ESP32 Arduino example (I2S PDM -> WAV on SD)
+
+This repository now includes `esp32_v2s200dz_sd_wav.ino`, an Arduino sketch for ESP32 that:
+
+- reads the V2S200DZ as a PDM source over I2S
+- uses `GPIO26` as the sensor clock and `GPIO27` as data in
+- writes mono 16-bit PCM into `/vibration.wav` on an SD card
+- patches the WAV header at the end so the file is directly playable/processable
+
+Wiring used by the sketch:
+
+- Sensor CLK -> ESP32 GPIO26
+- Sensor DT  -> ESP32 GPIO27
+- SD CS      -> ESP32 GPIO5
+- SD SPI pins (default): MOSI=23, MISO=19, SCK=18
+
+Usage:
+
+1. Open `esp32_v2s200dz_sd_wav.ino` in Arduino IDE (ESP32 core).
+2. Select your ESP32 board.
+3. Insert/formatted FAT32 SD card.
+4. Flash and open serial monitor at 115200.
+5. After capture completes, read `/vibration.wav` from SD card.
+
+If your ESP32 core version prefers the newer I2S API (`i2s_std` / `i2s_pdm`), adapt the initialization section accordingly.
